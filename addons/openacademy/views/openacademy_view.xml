@@ -1,0 +1,144 @@
+<odoo>
+  <!-- explicit list view definition -->
+  <record model="ir.ui.view" id="openacademy.list">
+    <field name="name">openacademy list</field>
+    <field name="model">openacademy.openacademy</field>
+    <field name="arch" type="xml">
+      <tree decoration-success="value &gt; 10" decoration-warning="value &lt;= 10" decoration-danger="value &lt;= 5">
+        <field name="full_name" />
+        <field name="value" />
+        <field name="description" />
+        <field name="responsible_id" attrs="{'invisible':[('value', '>', 10)]}" />
+      </tree>
+    </field>
+  </record>
+
+  <!-- search  -->
+  <record model="ir.ui.view" id="openacademy_search_view">
+    <field name="name">openacademy.search</field>
+    <field name="model">openacademy.openacademy</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="first_name" />
+        <field name="last_name" />
+        <field name="value" />
+        <field name="description" string="Last Name and description"
+          filter_domain="['|', ('last_name', 'ilike', self), ('description', 'ilike', self)]" />
+        <group string="Group By">
+          <filter name="group_by_value" string="Value" context="{'group_by': 'value'}" />
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record model="ir.ui.view" id="openacademy_form_view">
+    <field name="name">openacademy.form</field>
+    <field name="model">openacademy.openacademy</field>
+    <field name="arch" type="xml">
+      <form string="Openacademy form">
+        <sheet>
+          <group colspan="4">
+            <group colspan="2" col="2">
+              <separator string="Information" colspan="2" />
+              <field name="first_name" />
+              <field name="last_name" />
+              <field name="responsible_id" />
+            </group>
+
+            <group colspan="2" col="2">
+              <separator string="Value" colspan="2" />
+              <field name="value" />
+            </group>
+
+            <notebook colspan="4">
+              <page string="Description">
+                <field name="description" nolabel="1" />
+              </page>
+              <page string="Sessions">
+                <field name="session_ids" nolabel="1" />
+              </page>
+            </notebook>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+
+  <!-- actions opening views on models -->
+
+  <record model="ir.actions.act_window" id="openacademy.action_window">
+    <field name="name">openacademy window</field>
+    <field name="res_model">openacademy.openacademy</field>
+    <field name="view_mode">tree,form</field>
+    <field name="context" eval="{'search_default_value': 1}" />
+  </record>
+
+
+  <!-- server action to the one above -->
+
+  <record model="ir.actions.server" id="openacademy.action_server">
+    <field name="name">openacademy server</field>
+    <field name="model_id" ref="model_openacademy_openacademy" />
+    <field name="state">code</field>
+    <field name="code">
+      action = {
+      "name": "Openacademy Server",
+      "type": "ir.actions.act_window",
+      "view_mode": "tree,form",
+      "res_model": model._name,
+      }
+    </field>
+  </record>
+
+  <!-- wizard -->
+  <record model="ir.ui.view" id="wizard_form_view">
+    <field name="name">wizard.form</field>
+    <field name="model">openacademy.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Add Attendees">
+        <group>
+          <field name="session_id" />
+          <field name="attendee_ids" />
+        </group>
+        <footer>
+          <button name="subscribe" type="object" string="Subscribe" class="oe_highlight" />
+          or
+          <button special="cancel" string="Cancel" />
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record model="ir.ui.view" id="multi_wizard_form_view">
+    <field name="name">multi_wizard.form</field>
+    <field name="model">openacademy.multi_wizard</field>
+    <field name="arch" type="xml">
+      <form string="Add Attendees">
+        <group>
+          <field name="session_ids" />
+          <field name="attendee_ids" />
+        </group>
+        <footer>
+          <button name="subscribe" type="object" string="Subscribe" class="oe_highlight" />
+          or
+          <button special="cancel" string="Cancel" />
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record model="ir.actions.act_window" id="launch_session_wizard">
+    <field name="name">Add Attendees</field>
+    <field name="res_model">openacademy.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <record model="ir.actions.act_window" id="launch_session_multi_wizard">
+    <field name="name">Add Attendees</field>
+    <field name="res_model">openacademy.multi_wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+</odoo>
