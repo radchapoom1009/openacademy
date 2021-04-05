@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  test:
+    image: registry.3roots.live/mvp:12.0
+    container_name: odoo-test
+    hostname: odoo-test
+    user: root
+    depends_on:
+      - test-db
+    networks:
+      - odoo-test
+    volumes:
+      - ./addons:/mnt/addons
+    environment:
+      - ODOO_RC=/mnt/odoo.test.conf
+    ports:
+      - 8888:8069
+    command: test $OPTIONS
+    tty: true
+
+  test-db:
+    image: postgres:12
+    container_name: odoo-test.db
+    hostname: odoo-db-test
+    networks:
+      - odoo-test
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+
+networks:
+  odoo-test:
+    name: odoo-test-network
